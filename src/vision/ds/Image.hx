@@ -71,6 +71,21 @@ abstract Image(ByteArray) {
 	#end
 
 	/**
+		Width used by the functions in this file
+	*/
+	var _width(get, #if vision_allow_resize set #else never #end):Int;
+
+	inline function get__width() {
+		return (#if vision_higher_width_cap this.getInt32(0) #else this.getUInt16(0) #end) /* -1 */;
+	}
+
+	#if vision_allow_resize
+	inline function set__width(value:Int) {
+		resize(value, height);
+	}
+	#end
+
+	/**
 		The height of the image.
 	**/
 	public var height(get, #if vision_allow_resize set #else never #end):Int;
@@ -80,6 +95,18 @@ abstract Image(ByteArray) {
 
 	#if vision_allow_resize
 	inline function set_height(value:Int) {
+		resize(width, value);
+	}
+	#end
+
+
+	var _height(get, #if vision_allow_resize set #else never #end):Int;
+
+	inline function get__height()
+		return Math.ceil((this.length - OFFSET) / (width * 4));
+
+	#if vision_allow_resize
+	inline function set__height(value:Int) {
 		resize(width, value);
 	}
 	#end
