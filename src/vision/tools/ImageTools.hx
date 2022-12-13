@@ -297,7 +297,7 @@ class ImageTools {
 		@return an `Array2D` of colors
 	**/
 	public static extern inline function getNeighborsOfPixelIter(image:Image, x:Int, y:Int, kernalSize:Int, circular:Bool = false):Iterator<Color> {
-		return new NeighborsIterator(image, x, y, kernalSize, circular);
+		return new NeighborsIterator(image, x, y, kernalSize / 2, circular);
 	}
 
 	public static inline function grayscalePixel(pixel:Color):Color {
