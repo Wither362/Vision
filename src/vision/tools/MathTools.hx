@@ -14,7 +14,7 @@ import vision.ds.Point2D;
 	A class consisting of a **b u n c h** of static methods for manipulating values,
 	calculating distances, intersections, etc.
 
-	This class is fully compatible with haxe's `Math` class. That means you don't have to use
+	This class is fully compatible with Haxe's `Math` class. That means you don't have to use
 	both at the same time.
 **/
 class MathTools {
@@ -74,19 +74,19 @@ class MathTools {
 	}
 
 	/**
-	 * Gets the point on `ray` , which is `distance` points away
+	 * Gets the point on `ray`, which is `distance` points away
 	 * from `startXPos`.
 	 * 
 	 * In order to avoid returning two points (since
 	 * any point on the ray has 2 points with the exact same distance from it),
-	 * you have the `goPositive` value.
+	 * you have the `frontResult` param.
 	 * 
 	 * 
 	 * @param startXPos The `x` position to start from.
 	 * @param distance The distance from `start` to the resulting point.
-	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
+	 * @param frontResult Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
 	 */
-	public static inline function findPointAtDistanceUsingX(ray:Ray2D, startXPos:Float, distance:Float, goPositive:Bool = true) {
+	public static inline function findPointAtDistanceUsingX(ray:Ray2D, startXPos:Float, distance:Float, frontResult:Bool = true) {
 		// Were going to step one point to the right, and check how much distance was covered.
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
@@ -94,23 +94,23 @@ class MathTools {
 		final start = ray.getPointAtX(startXPos);
 		final step = MathTools.distanceBetweenPoints(ray.getPointAtX(start.y + 1), start);
 		var diff = distance / step;
-		return ray.getPointAtY(start.y + (if (goPositive) diff else -diff));
+		return ray.getPointAtY(start.y + (frontResult ? diff : -diff));
 	}
 
 	/**
-	 * Gets the point on `ray` , which is `distance` points away
+	 * Gets the point on `ray`, which is `distance` points away
 	 * from `startYPos`.
 	 * 
 	 * In order to avoid returning two points (since
 	 * any point on the ray has 2 points with the exact same distance from it),
-	 * you have the `goPositive` value.
+	 * you have the `frontResult` param.
 	 * 
 	 * 
 	 * @param startYPos The `y` position to start from.
 	 * @param distance The distance from `start` to the resulting point.
-	 * @param goPositive Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
+	 * @param frontResult Whether or not the resulting point is in front/behind `start`. `true` means in front, `false` means behind.
 	 */
-	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, goPositive:Bool = true) {
+	 public static inline function findPointAtDistanceUsingY(ray:Ray2D, startYPos:Float, distance:Float, frontResult:Bool = true) {
 		// Were going to step one point to the right, and check how much distance was covered.
 		// After checking, were going to divide distance with the distance between start to start(y + 1)
 		// Make sure to not surpass `distance`
@@ -118,7 +118,7 @@ class MathTools {
 		final start = ray.getPointAtY(startYPos);
 		final step = MathTools.distanceBetweenPoints(ray.getPointAtY(start.x + 1), start);
 		var diff = distance / step;
-		return ray.getPointAtX(start.x + (if (goPositive) diff else -diff));
+		return ray.getPointAtX(start.x + (frontResult diff : -diff));
 	}
 
 	//-----------------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ class MathTools {
 	// Point2D Extensions.
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function distanceFromPointToRay2D(point:Point2D, ray:Ray2D) {
+	public static inline function distanceFromPointToRay2D(point:Point2D, ray:Ray2D):Float {
 		// Get the closest point on the ray to the given point
 		final closestPoint:Point2D = getClosestPointOnRay2D(point, ray);
 
@@ -250,17 +250,17 @@ class MathTools {
 		return angle2 - angle;
 	}
 
-	public static inline function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	public static inline function radiansFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		final x:Float = point2.x - point1.x;
 		final y:Float = point2.y - point1.y;
 		return atan2(y, x);
 	}
 
-	public static inline function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	public static inline function degreesFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		return radiansToDegrees(radiansFromPointToPoint2D(point1, point2));
 	}
 
-	public static inline function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D) {
+	public static inline function slopeFromPointToPoint2D(point1:Point2D, point2:Point2D):Float {
 		return radiansToSlope(radiansFromPointToPoint2D(point1, point2));
 	}
 
@@ -291,7 +291,7 @@ class MathTools {
 	// General
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function clamp(value:Int, mi:Int, ma:Int) {
+	public static inline function clamp(value:Int, mi:Int, ma:Int):Int {
 		return inline min(inline max(value, mi), ma);
 	}
 
@@ -318,7 +318,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapInt(value:Int, min:Int, max:Int) {
+	public inline static function wrapInt(value:Int, min:Int, max:Int):Int {
 		var range = max - min + 1;
 
 		if (value < min)
@@ -331,7 +331,7 @@ class MathTools {
 		Ensures that the value is between min and max, by wrapping the value around
 		when it is outside of the range.
 	**/
-	public inline static function wrapFloat(value:Float, min:Float, max:Float) {
+	public inline static function wrapFloat(value:Float, min:Float, max:Float):Float {
 		var range = max - min;
 
 		if (value < min)
@@ -343,7 +343,7 @@ class MathTools {
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
-	public static function boundInt(value:Int, min:Int, max:Int) {
+	public static function boundInt(value:Int, min:Int, max:Int):Int {
 		if (value < min) return min;
 		if (value > max) return max;
 		return value;
@@ -352,7 +352,7 @@ class MathTools {
 	/**
 		Ensures that the value is between min and max, by bounding the value when it is outside of the range.
 	**/
-	public static function boundFloat(value:Float, min:Float, max:Float) {
+	public static function boundFloat(value:Float, min:Float, max:Float):Int {
 		return Math.min(Math.max(value, min), max);
 	}
 
@@ -367,27 +367,27 @@ class MathTools {
 	// Conversions
 	//-----------------------------------------------------------------------------------------
 
-	public static inline function slopeToDegrees(slope:Float) {
+	public static inline function slopeToDegrees(slope:Float):Float {
 		return atan(slope) * 180 / PI;
 	}
 
-	public static inline function slopeToRadians(slope:Float) {
+	public static inline function slopeToRadians(slope:Float):Float {
 		return atan(slope);
 	}
 
-	public static inline function degreesToSlope(degrees:Float) {
+	public static inline function degreesToSlope(degrees:Float):Float {
 		return tan(degrees * PI / 180);
 	}
 
-	public static inline function degreesToRadians(degrees:Float) {
+	public static inline function degreesToRadians(degrees:Float):Float {
 		return degrees * PI / 180;
 	}
 
-	public static inline function radiansToDegrees(radians:Float) {
+	public static inline function radiansToDegrees(radians:Float):Float {
 		return radians * 180 / PI;
 	}
 
-	public static inline function radiansToSlope(radians:Float) {
+	public static inline function radiansToSlope(radians:Float):Float {
 		return tan(radians);
 	}
 
@@ -450,10 +450,10 @@ class MathTools {
 	}
 
 	/**
-	 * Takes a 1D array and turns it into a 2D array, while splitting into arrays every `delimiter` indexes
+	 * Takes a 1D array and turns it into a 2D array, while splitting into arrays every `delimiter` indexes.
 	 * @param array
 	 * @param delimiter
-	 * @return Array<T>
+	 * @return Array<Array<T>>
 	 */
 	overload extern inline public static function raise<T>(array:Array<T>, delimiter:Int):Array<Array<T>> {
 		var raised = [];
@@ -468,7 +468,7 @@ class MathTools {
 	 * Takes a Vector and turns it into a Matrix, while splitting into vectors every `delimiter` indexes
 	 * @param vector
 	 * @param delimiter
-	 * @return Array<T>
+	 * @return Matrix<T>
 	 */
 	 overload extern inline public static function raise<T>(vector:Vector<T>, delimiter:Int):Matrix<T> {
 		var raised = new Matrix(floor(vector.length / delimiter));
@@ -582,7 +582,7 @@ class MathTools {
 	/**
 	 * Gets the median of the given values.
 	 */
-	extern overload public static inline function median(...values:Float) {
+	extern overload public static inline function median(...values:Float):Float {
 		var s = values.toArray();
 		ArraySort.sort(s , (a, b) -> Std.int(a - b));
 		return s[floor(values.length / 2)];
@@ -603,13 +603,13 @@ class MathTools {
 	/**
 	 * Gets the median of the given values.
 	 */
-	extern overload public static inline function median(values:Array<Float>) {
+	extern overload public static inline function median(values:Array<Float>):Float {
 		var s = values.copy();
 		ArraySort.sort(s , (a, b) -> Std.int(a - b));
 		return s[floor(values.length / 2)];
 	}
 
-	public static inline function isInt(v:Float) {
+	public static inline function isInt(v:Float):Bool {
 		return v == Std.int(v);
 	}
 
